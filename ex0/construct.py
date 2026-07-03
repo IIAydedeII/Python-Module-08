@@ -7,6 +7,7 @@ import site
 
 def main():
     if sys.prefix == sys.base_prefix:
+        print()
         print("MATRIX STATUS:", "You're still plugged in")
         print()
 
@@ -26,6 +27,7 @@ def main():
 
         print("Then run this program again.")
     else:
+        print()
         print("MATRIX STATUS:", "Welcome to the construct")
         print()
 

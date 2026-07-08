@@ -10,8 +10,7 @@
 #     help(sys.exit)
 #     sys.exit(f"Got an import error: {e}")
 
-from sys import argv
-from os import path
+from sys import argv, exit
 from importlib import import_module
 from importlib.metadata import version, PackageNotFoundError
 
@@ -23,7 +22,7 @@ DEPENDENCIES = {
 }
 
 
-def check_dependencies():
+def check_dependencies() -> None:
     print()
     print("Checking dependencies:")
     has_missing = False
@@ -37,26 +36,25 @@ def check_dependencies():
             print(f"[MISSING] {package} - {description}")
 
     if has_missing:
-        program_name = argv[0]
-        pip_requirements = path.join(
-            path.dirname(program_name), "requirements.txt"
+        error_message = "\n".join(
+            [
+                "",
+                "Missing packages should be installed",
+                "",
+                "For pip, type:",
+                "-----------------",
+                "pip install -r ./requirements.txt",
+                f"python3 {argv[0]}",
+                "",
+                "For Poetry, type:",
+                "-----------------",
+                "poetry install",
+                # "poetry install -P ex1",
+                # "poetry install -C ex1",
+                f"poetry run python {argv[0]}",
+            ]
         )
-        print()
-        print("Missing packages should be installed")
-        print()
-        print("For pip, type:")
-        print("-----------------")
-        print(f"pip install -r {pip_requirements}")
-        # print(f"pip install -r {path.dirname(program_name)}/requirements.txt")
-        print(f"python3 {program_name}")
-
-        print()
-        print("For Poetry, type:")
-        print("-----------------")
-        print("poetry install")
-        # print("poetry install -P ex1")
-        # print("poetry install -C ex1")
-        print(f"poetry run python {program_name}")
+        exit(error_message)
 
 
 def main():

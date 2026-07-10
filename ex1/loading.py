@@ -48,12 +48,11 @@ def check_dependencies() -> None:
         exit(error_message)
 
 
-def request_data():
+def request_data() -> dict[str, list[float]] | None:
     from requests import get
 
     url = "https://api.open-meteo.com/v1/forecast"
-
-    params = {
+    params: dict[str, float | str | list[str]] = {
         # "latitude": 40.7925694444,
         # "longitude": 29.5107055556,
         "latitude": 40.7925,

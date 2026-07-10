@@ -13,7 +13,7 @@ DEPENDENCIES = {
 }
 
 
-def validate_dependencies() -> None:
+def check_dependencies() -> None:
     has_missing = False
     for package, description in DEPENDENCIES.items():
         try:
@@ -63,6 +63,7 @@ def request_data() -> dict[str, list[float]]:
         "daily": [
             "apparent_temperature_min",
             "apparent_temperature_max",
+            "temperature_2m_mean",
         ],
         "past_days": 92,
         "timezone": "auto",
@@ -88,7 +89,7 @@ def main() -> None:
     print()
     print("Checking dependencies:")
     try:
-        validate_dependencies()
+        check_dependencies()
     except ImportError as e:
         exit(str(e))
 
@@ -99,54 +100,57 @@ def main() -> None:
     except IOError as e:
         exit(str(e))
 
-    # import numpy as np
+    print("Analyzing Matrix data...")
     from pandas import DataFrame, to_datetime
-    from matplotlib import pyplot as plot
 
     data_frame = DataFrame(data)
-
-    print("Analyzing Matrix data...")
-    data_frame = data_frame.dropna(
-        subset=["apparent_temperature_min", "apparent_temperature_max"]
-    )
+    data_frame = data_frame.dropna()
     data_frame["time"] = to_datetime(data_frame["time"])
 
-    x = data_frame["time"]
-    y1 = data_frame["apparent_temperature_min"]
-    y2 = data_frame["apparent_temperature_max"]
+    print(f"Processing {data_frame.shape[0]} data points...")
 
-    print(f"Processing {len(x)} data points...")
+    time = data_frame["time"]
+    temp_min = data_frame["apparent_temperature_min"]
+    temp_max = data_frame["apparent_temperature_max"]
+    temp = data_frame["temperature_2m_mean"]
+
+    print("Generating visualization...")
+    from matplotlib import pyplot as plot
 
     figure, axes = plot.subplots(figsize=(12, 8), dpi=120)
+
+    figure.autofmt_xdate()
     axes.fill_between(
-        x=x, y1=y1, y2=y2, alpha=0.3, color="orange", label="temperature range"
+        x=time,
+        y1=temp_min,
+        y2=temp_max,
+        alpha=0.3,
+        color="orange",
+        label="apparent temperature range",
     )
     axes.plot(
-        x,
-        (y1 + y2) / 2,
+        time,
+        temp,
         color="red",
         linewidth=3,
         marker="o",
         markersize=5,
-        label="average apparent temperature",
+        label="average temperature",
     )
-    axes.set(ylim=(min(y1.min(), y2.min()) - 2, max(y1.max(), y2.max()) + 2))
-
     axes.set_title(
-        "42 Kocaeli | Apparent Temperature Over Time",
+        "Zion (42 Kocaeli) Temperature Over Time\nwith Apparent Range",
         fontsize=16,
         fontweight="bold",
         pad=15,
     )
+    axes.set_xlim(time.min(), time.max())
     axes.set_xlabel("Date")
     axes.set_ylabel("Temperature (°C)")
     axes.legend()
     axes.grid()
-    # axes.spines["top"].set_visible(False)
-    # axes.spines["right"].set_visible(False)
-    figure.autofmt_xdate()
+    axes.spines["top"].set_visible(False)
+    axes.spines["bottom"].set_visible(False)
 
-    print("Generating visualization...")
     save_file = "matrix_analysis.png"
     plot.savefig(save_file)
     plot.show()

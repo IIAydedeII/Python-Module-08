@@ -50,6 +50,10 @@ def check_dependencies() -> None:
 
 def request_data() -> dict[str, list[float]] | None:
     from requests import get
+    from requests.exceptions import (
+        JSONDecodeError,
+        RequestException,
+    )
 
     url = "https://api.open-meteo.com/v1/forecast"
     params: dict[str, float | str | list[str]] = {
@@ -67,12 +71,19 @@ def request_data() -> dict[str, list[float]] | None:
 
     print()
     print("Requesting data...")
+    try:
+        response = get(url, params=params)
+        data = response.json()
 
-    response = get(url, params=params)
+        return data["daily"]
+    except JSONDecodeError as e:
+        print("The server returned invalid JSON:", e)
+    except KeyError as e:
+        print("The response format was not what was expected.", e)
+    except RequestException as e:
+        print("Request failed:", e)
 
-    data = response.json()
-
-    return data["daily"]
+    return None
 
 
 def main() -> None:

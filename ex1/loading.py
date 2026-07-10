@@ -100,66 +100,76 @@ def main() -> None:
     except IOError as e:
         exit(str(e))
 
-    print("Analyzing Matrix data...")
-    from pandas import DataFrame, to_datetime
+    try:
+        print("Analyzing Matrix data...")
+        from pandas import DataFrame, to_datetime
 
-    data_frame = DataFrame(data)
-    data_frame = data_frame.dropna()
-    data_frame["time"] = to_datetime(data_frame["time"])
+        data_frame = DataFrame(data)
+        data_frame = data_frame.dropna()
+        data_frame["time"] = to_datetime(data_frame["time"])
 
-    print(f"Processing {data_frame.shape[0]} data points...")
+        print(f"Processing {data_frame.shape[0]} data points...")
 
-    time = data_frame["time"]
-    temp_min = data_frame["apparent_temperature_min"]
-    temp_max = data_frame["apparent_temperature_max"]
-    temp = data_frame["temperature_2m_mean"]
+        time = data_frame["time"]
+        temp_min = data_frame["apparent_temperature_min"]
+        temp_max = data_frame["apparent_temperature_max"]
+        temp = data_frame["temperature_2m_mean"]
 
-    print("Generating visualization...")
-    from matplotlib import pyplot as plot, dates as mdates
+        print("Generating visualization...")
+        from matplotlib import pyplot as plot, dates as mdates
 
-    figure, axes = plot.subplots(figsize=(12, 8), dpi=120)
+        figure, axes = plot.subplots(figsize=(12, 8), dpi=120)
 
-    figure.autofmt_xdate()
-    axes.fill_between(
-        x=time,
-        y1=temp_min,
-        y2=temp_max,
-        alpha=0.3,
-        color="orange",
-        label="apparent temperature range",
-    )
-    axes.plot(
-        time,
-        temp,
-        color="red",
-        linewidth=3,
-        marker="o",
-        markersize=5,
-        label="average temperature",
-    )
-    axes.set_title(
-        "Zion (42 Kocaeli) Temperature Over Time\nwith Apparent Range",
-        fontsize=16,
-        fontweight="bold",
-        pad=15,
-    )
-    axes.xaxis.set_major_locator(mdates.AutoDateLocator())
-    axes.xaxis.set_major_formatter(mdates.DateFormatter("%b %d"))
-    axes.set_xlim(time.min(), time.max())
-    axes.set_xlabel("Date")
-    axes.set_ylabel("Temperature (°C)")
-    axes.legend()
-    axes.grid()
-    axes.spines["top"].set_visible(False)
-    axes.spines["bottom"].set_visible(False)
+        figure.autofmt_xdate()
+        axes.fill_between(
+            x=time,
+            y1=temp_min,
+            y2=temp_max,
+            alpha=0.3,
+            color="orange",
+            label="apparent temperature range",
+        )
+        axes.plot(
+            time,
+            temp,
+            color="red",
+            linewidth=3,
+            marker="o",
+            markersize=5,
+            label="average temperature",
+        )
+        axes.set_title(
+            "Zion (42 Kocaeli) Temperature Over Time\nwith Apparent Range",
+            fontsize=16,
+            fontweight="bold",
+            pad=15,
+        )
+        axes.xaxis.set_major_locator(mdates.AutoDateLocator())
+        axes.xaxis.set_major_formatter(mdates.DateFormatter("%b %d"))
+        axes.set_xlim(time.min(), time.max())
+        axes.set_xlabel("Date")
+        axes.set_ylabel("Temperature (°C)")
+        axes.legend()
+        axes.grid()
+        axes.spines["top"].set_visible(False)
+        axes.spines["bottom"].set_visible(False)
+    except KeyError as e:
+        print(f"Missing required column:", {e})
+    except TypeError as e:
+        print(f"Wrong data type:", {e})
+    except ValueError as e:
+        print(f"Invalid data format:", {e})
 
-    save_file = "matrix_analysis.png"
-    plot.savefig(save_file)
-    plot.show()
+    try:
+        save_file = "matrix_analysis.png"
+        plot.savefig(save_file)
+        plot.show()
 
-    print()
-    print("Analysis complete!")
-    print("Results saved to:", save_file)
+        print()
+        print("Analysis complete!")
+        print("Results saved to:", save_file)
+    except OSError as e:
+        print(f"Could not save output file:", {e})
 
 
 if __name__ == "__main__":

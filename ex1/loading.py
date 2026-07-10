@@ -7,7 +7,7 @@ from importlib.metadata import version
 
 DEPENDENCIES = {
     "pandas": "Data manipulation",
-    "numpy": "Numerical computation",
+    # "numpy": "Numerical computation",
     "requests": "Network access",
     "matplotlib": "Visualization",
 }
@@ -99,9 +99,8 @@ def main() -> None:
     except IOError as e:
         exit(str(e))
 
-    from pandas import DataFrame, to_datetime
-
     # import numpy as np
+    from pandas import DataFrame, to_datetime
     from matplotlib import pyplot as plot
 
     data_frame = DataFrame(data)

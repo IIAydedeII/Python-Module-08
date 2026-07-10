@@ -13,9 +13,7 @@ DEPENDENCIES = {
 }
 
 
-def check_dependencies() -> None:
-    print()
-    print("Checking dependencies:")
+def validate_dependencies() -> None:
     has_missing = False
     for package, description in DEPENDENCIES.items():
         try:
@@ -27,28 +25,29 @@ def check_dependencies() -> None:
             print(f"[MISSING] {package} - {description}")
 
     if has_missing:
-        error_message = "\n".join(
-            [
-                "",
-                "Missing packages should be installed",
-                "",
-                "For pip, type:",
-                "-----------------",
-                "pip install -r ./requirements.txt",
-                f"python3 {argv[0]}",
-                "",
-                "For Poetry, type:",
-                "-----------------",
-                "poetry install",
-                # "poetry install -P ex1",
-                # "poetry install -C ex1",
-                f"poetry run python {argv[0]}",
-            ]
+        raise ImportError(
+            "\n".join(
+                [
+                    "",
+                    "Missing packages should be installed",
+                    "",
+                    "For pip, type:",
+                    "-----------------",
+                    "pip install -r ./requirements.txt",
+                    f"python3 {argv[0]}",
+                    "",
+                    "For Poetry, type:",
+                    "-----------------",
+                    "poetry install",
+                    # "poetry install -P ex1",
+                    # "poetry install -C ex1",
+                    f"poetry run python {argv[0]}",
+                ]
+            )
         )
-        exit(error_message)
 
 
-def request_data() -> dict[str, list[float]] | None:
+def request_data() -> dict[str, list[float]]:
     from requests import get
     from requests.exceptions import (
         JSONDecodeError,
@@ -69,35 +68,43 @@ def request_data() -> dict[str, list[float]] | None:
         "timezone": "auto",
     }
 
-    print()
-    print("Requesting data...")
     try:
         response = get(url, params=params)
         data = response.json()
 
         return data["daily"]
     except JSONDecodeError as e:
-        print("The server returned invalid JSON:", e)
+        raise RequestException("The server returned invalid JSON: " + str(e))
     except KeyError as e:
-        print("The response format was not what was expected.", e)
+        raise RequestException("Cannot find the key: " + str(e))
     except RequestException as e:
-        print("Request failed:", e)
-
-    return None
+        raise RequestException("Request failed: " + str(e))
 
 
 def main() -> None:
     print()
     print("LOADING STATUS: Loading programs...")
 
-    check_dependencies()
+    print()
+    print("Checking dependencies:")
+    try:
+        validate_dependencies()
+    except ImportError as e:
+        exit(str(e))
+
+    print()
+    print("Requesting data...")
+    try:
+        data = request_data()
+    except IOError as e:
+        exit(str(e))
 
     from pandas import DataFrame, to_datetime
 
     # import numpy as np
     from matplotlib import pyplot as plot
 
-    data_frame = DataFrame(request_data())
+    data_frame = DataFrame(data)
 
     print("Analyzing Matrix data...")
     data_frame = data_frame.dropna(

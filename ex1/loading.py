@@ -115,7 +115,7 @@ def main() -> None:
     temp = data_frame["temperature_2m_mean"]
 
     print("Generating visualization...")
-    from matplotlib import pyplot as plot
+    from matplotlib import pyplot as plot, dates as mdates
 
     figure, axes = plot.subplots(figsize=(12, 8), dpi=120)
 
@@ -143,6 +143,8 @@ def main() -> None:
         fontweight="bold",
         pad=15,
     )
+    axes.xaxis.set_major_locator(mdates.AutoDateLocator())
+    axes.xaxis.set_major_formatter(mdates.DateFormatter("%b %d"))
     axes.set_xlim(time.min(), time.max())
     axes.set_xlabel("Date")
     axes.set_ylabel("Temperature (°C)")

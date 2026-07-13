@@ -74,6 +74,7 @@ def main() -> None:
 
     print("[OK] Production overrides available")
 
+    print()
     print("The Oracle sees all configurations.")
 
 

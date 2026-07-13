@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-
-
 from sys import argv, exit
 from importlib import import_module
 from importlib.metadata import version

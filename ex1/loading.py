@@ -154,11 +154,11 @@ def main() -> None:
         axes.spines["bottom"].set_visible(False)
         plot.show()
     except KeyError as e:
-        print(f"Missing required column:", {e})
+        print("Missing required column:", {e})
     except TypeError as e:
-        print(f"Wrong data type:", {e})
+        print("Wrong data type:", {e})
     except ValueError as e:
-        print(f"Invalid data format:", {e})
+        print("Invalid data format:", {e})
 
     try:
         save_file = "matrix_analysis.png"
@@ -168,7 +168,7 @@ def main() -> None:
         print("Analysis complete!")
         print("Results saved to:", save_file)
     except OSError as e:
-        print(f"Could not save output file:", {e})
+        print("Could not save output file:", {e})
 
 
 if __name__ == "__main__":

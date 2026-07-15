@@ -152,6 +152,7 @@ def main() -> None:
         axes.grid()
         axes.spines["top"].set_visible(False)
         axes.spines["bottom"].set_visible(False)
+        plot.show()
     except KeyError as e:
         print(f"Missing required column:", {e})
     except TypeError as e:
@@ -162,7 +163,6 @@ def main() -> None:
     try:
         save_file = "matrix_analysis.png"
         plot.savefig(save_file)
-        plot.show()
 
         print()
         print("Analysis complete!")

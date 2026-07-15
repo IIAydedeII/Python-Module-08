@@ -150,7 +150,6 @@ def main() -> None:
         axes.grid()
         axes.spines["top"].set_visible(False)
         axes.spines["bottom"].set_visible(False)
-        plot.show()
     except KeyError as e:
         print("Missing required column:", {e})
     except TypeError as e:
@@ -167,6 +166,8 @@ def main() -> None:
         print("Results saved to:", save_file)
     except OSError as e:
         print("Could not save output file:", {e})
+
+    plot.show()
 
 
 if __name__ == "__main__":

@@ -68,7 +68,8 @@ def request_data() -> dict[str, list[float]]:
     }
 
     try:
-        response = get(url, params=params)
+        response = get(url, params=params, timeout=(5, 15))
+        response.raise_for_status()
         data = response.json()
 
         return data["daily"]

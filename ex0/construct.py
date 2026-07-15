@@ -5,7 +5,7 @@ import os
 import site
 
 
-def main():
+def main() -> None:
     if sys.prefix == sys.base_prefix:
         print()
         print("MATRIX STATUS:", "You're still plugged in")

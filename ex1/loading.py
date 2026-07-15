@@ -115,6 +115,7 @@ def main() -> None:
         print("Generating visualization...")
         from matplotlib import pyplot as plot, dates as mdates
 
+        plot.style.use("dark_background")
         figure, axes = plot.subplots(figsize=(12, 8), dpi=120)
 
         figure.autofmt_xdate()
@@ -122,14 +123,14 @@ def main() -> None:
             x=time,
             y1=temp_min,
             y2=temp_max,
-            alpha=0.3,
-            color="orange",
+            alpha=0.5,
+            color="red",
             label="apparent temperature range",
         )
         axes.plot(
             time,
             temp,
-            color="red",
+            color="orange",
             linewidth=3,
             marker="o",
             markersize=5,
@@ -147,7 +148,7 @@ def main() -> None:
         axes.set_xlabel("Date")
         axes.set_ylabel("Temperature (°C)")
         axes.legend()
-        axes.grid()
+        axes.grid(True)
         axes.spines["top"].set_visible(False)
         axes.spines["bottom"].set_visible(False)
     except KeyError as e:

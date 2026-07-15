@@ -37,8 +37,6 @@ def check_dependencies() -> None:
                     "For Poetry, type:",
                     "-----------------",
                     "poetry install",
-                    # "poetry install -P ex1",
-                    # "poetry install -C ex1",
                     f"poetry run python {argv[0]}",
                 ]
             )

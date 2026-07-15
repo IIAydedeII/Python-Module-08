@@ -37,8 +37,7 @@ def main() -> None:
         print()
 
         print("SUCCESS: You're in an isolated environment!")
-        print("Safe to install packages without affecting")
-        print("the global system.")
+        print("Safe to install packages without affecting the global system.")
         print()
 
         print("Package installation path:")
